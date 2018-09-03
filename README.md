@@ -158,7 +158,7 @@ Let us start by studying a few examples:
 
 Builds and executes the `Imp_AST_test` example, that constructs a program in "imp" directly in terms of an AST.
 
-In `Env.ml` we define a bi-directional key (integer) value (string) store for our variable identifiers. A failing lookup of a variable identifier (string) creates a new allocation and increments the key (integer). (The implementation of `Env` uses list, more efficient data structures can be thought of, e.g., hashmaps, but efficiency of the compiler is not a concern for now). For this example:
+In `Env.ml` we define a bi-directional key (integer) value (string) store for our variable identifiers. A failing lookup of a variable identifier (string) creates a new allocation and increments the key (integer). (The implementation of `Env` uses list, more efficient data structures can be thought of, e.g., hash maps, but efficiency of the compiler is not a concern for now). For this example:
 
 - Key integer 1, has the associated value string "v1"
 
