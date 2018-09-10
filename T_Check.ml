@@ -32,7 +32,7 @@ let of_idt ch (id, (t,s)) =
   of_id id ^ ":" ^ of_types t ^ of_span ch s
 
 
-let tc_unify ch t1 s1 t2 s2 : types =
+let tc_unify ch t1 t2 s2 : types =
   match t1, t2 with
   | Tsint,    Tsint     -> Tsint
   | Tuint32,  Tuint32   -> Tuint32
@@ -40,9 +40,19 @@ let tc_unify ch t1 s1 t2 s2 : types =
   | t,        Tint      -> t
   | _,        _         ->
     raise (TypeError(
-        "Type error: " ^ 
-        of_span ch s1 ^ " : " ^ of_types t1 ^ ", does not match " ^ 
-        of_span ch s2 ^ " : " ^ of_types t2 ))
+        "Type error: Expected " ^  of_types t1 ^ 
+        " got "  ^ of_types t2 ^ " in:" ^ of_span ch s2))
+
+let tc_unify2 ch t1 s1 t2 s2 : types =
+  match t1, t2 with
+  | Tsint,    Tsint     -> Tsint
+  | Tuint32,  Tuint32   -> Tuint32
+  | Tint,     t         -> t
+  | t,        Tint      -> t
+  | _,        _         ->
+    raise (TypeError(
+        "Type error: " ^ of_types t1 ^ " in:" ^ of_span ch s1 ^
+        " does not match " ^ of_types t2 ^ " in:" ^ of_span ch s2))
 
 let get_id_type itl (id : id) : types * span =
   try
@@ -58,37 +68,34 @@ let rec tc_aexpr ch itl (a, span) : Imp.aexpr * types =
     let (t, _ ) = get_id_type itl id in
     (Imp.Avar id, t)
   | Aadd ((a1, a1_span), (a2, a2_span)) -> 
-
     (* type check a1 against Tsint *)
     let (ai1, t1) = tc_aexpr ch itl (a1, a1_span) in
-    let _ = tc_unify ch Tsint (0, 0) t1 a1_span in
+    let _ = tc_unify ch Tsint t1 a1_span in
 
     (* type check a2 against Tsint *)
     let (ai2, t2) = tc_aexpr ch itl (a2, a2_span) in
-    let _ = tc_unify ch Tsint (0, 0) t2 a2_span in
+    let _ = tc_unify ch Tsint t2 a2_span in
 
-    (Imp.Aadd(ai1, ai2), t1) 
+    (Imp.Aadd(ai1, ai2), Tsint) 
   | Aaddu ((a1, a1_span), (a2, a2_span)) -> 
-
     (* type check a1 against Tuint32 *)
     let (ai1, t1) = tc_aexpr ch itl (a1, a1_span) in
-    let _ = tc_unify ch Tuint32 (0, 0) t1 a1_span in
+    let _ = tc_unify ch Tuint32 t1 a1_span in
 
     (* type check a2 against Tuint32 *)
     let (ai2, t2) = tc_aexpr ch itl (a2, a2_span) in
-    let _ = tc_unify ch Tuint32 (0, 0) t2 a2_span in
+    let _ = tc_unify ch Tuint32 t2 a2_span in
 
     (Imp.Aaddu(ai1, ai2), t1)
 
   | Asub ((a1, a1_span), (a2, a2_span)) -> 
-
     (* type check a1 against Tsint *)
     let (ai1, t1) = tc_aexpr ch itl (a1, a1_span) in
-    let _ = tc_unify ch Tsint (0, 0) t1 a1_span in
+    let _ = tc_unify ch Tsint t1 a1_span in
 
     (* type check a2 against Tsint *)
     let (ai2, t2) = tc_aexpr ch itl (a2, a2_span) in
-    let _ = tc_unify ch Tsint (0, 0) t2 a2_span in
+    let _ = tc_unify ch Tsint t2 a2_span in
 
     (Imp.Asub(ai1, ai2), t1)  
 (* with
@@ -101,12 +108,20 @@ let rec tc_bexpr ch itl (b, span) =
     | Bfalse -> Imp.Bfalse
     | Band (b1, b2) -> Imp.Band(tc_bexpr ch itl b1,tc_bexpr ch itl b2)
     | Bnot b -> Imp.Bnot(tc_bexpr ch itl b)
-    | Beq ((a1, a1_span),(a2, a2_span)) -> 
+    | Beq ((a1, a1_span),(a2, a2_span)) ->
       let (a1, t1) = tc_aexpr ch itl (a1, a1_span) in
       let (a2, t2) = tc_aexpr ch itl (a2, a2_span) in
-      let _ = tc_unify ch t1 a1_span t2 a2_span in
+      let _ = tc_unify2 ch t1 a1_span t2 a2_span in
       Imp.Beq(a1, a2)
-    | Ble (a1, a2) -> Imp.Ble(imp_of_aexpr_span a1, imp_of_aexpr_span a2)
+    | Ble ((a1,a1_span), (a2, a2_span)) -> 
+      (* type check a1 against Tsint *) 
+      let (a1, t1) = tc_aexpr ch itl (a1, a1_span) in
+      let _ = tc_unify ch Tsint t1 a1_span in
+
+      (* type check a2 against Tsint *) 
+      let (a2, t2) = tc_aexpr ch itl (a2, a2_span) in
+      let _ = tc_unify ch Tsint t2 a2_span in
+      Imp.Ble(a1,  a2)
   with
   | TypeError msg -> raise (TypeError (msg ^ nl ^ "in expression:" ^ of_span ch span ))
 
@@ -119,7 +134,7 @@ let rec tc_com ch itl span com =
       let (_, a_span) = a in
       let (a, ta) = tc_aexpr ch itl a in
       let (tid, tid_span) = get_id_type itl id in
-      let _ = tc_unify ch ta a_span tid tid_span in 
+      let _ = tc_unify2 ch ta a_span tid tid_span in 
       Imp.Cassign (id, a)
     | Cif (b, c1, c2)  -> Imp.Cif(tc_bexpr ch itl b, tc_com_span ch itl c1, tc_com_span ch itl c2)
     | Cwhile (b, c) -> Imp.Cwhile(tc_bexpr ch itl b, tc_com_span ch itl c)
