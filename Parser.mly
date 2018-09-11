@@ -65,29 +65,6 @@ com:
 bexpr_span:
   | bexpr                             { ($1, ($startofs, $endofs)) }
 bexpr:
-<<<<<<< HEAD
-  | LP bexpr RP                    { $2 }
-  | TRUE                           { Btrue }
-  | FALSE                          { Bfalse }
-  | bexpr AND bexpr                { Band ($1, $3) }
-  | NOT bexpr                      { Bnot ($2) }
-  | aexpr BEQ aexpr                { Beq ($1, $3) }
-  | aexpr BLE aexpr                { Ble ($1, $3) }
-  | aexpr BGE aexpr                { Ble ($3, $1) }
-  | aexpr BL aexpr                 { Band (Ble ($1, $3), Bnot (Beq ($1, $3))) }
-  | aexpr BG aexpr                 { Bnot (Ble ($1, $3)) }
-
-
-aexpr:
-  | LP aexpr RP                    { $2 }
-  | INTVAL                         { Anum (Z.of_int $1) }
-  | ID                             { Avar $1 }
-  | aexpr PLUS aexpr               { Aadd ($1, $3) }
-  | aexpr PLUSU aexpr              { Aaddu ($1, $3) }
-  | aexpr MINUS aexpr              { Asub ($1, $3) }
-  | LP MINUS aexpr RP              { Asub (Anum (Z.zero), $3) }
-
-=======
   | LP bexpr RP                       { $2 }
   | TRUE                              { Btrue }
   | FALSE                             { Bfalse }
@@ -95,6 +72,9 @@ aexpr:
   | NOT bexpr_span                    { Bnot ($2) }
   | aexpr_span BEQ aexpr_span         { Beq ($1, $3) }
   | aexpr_span BLE aexpr_span         { Ble ($1, $3) }
+  | aexpr_span BGE aexpr_span         { Ble ($3, $1) }
+  | aexpr_span BL aexpr_span          { Band (Ble ($1, $3), Bnot (Beq ($1, $3))) }
+  | aexpr_span BG aexpr_span          { Bnot (Ble ($1, $3)) }
 
 aexpr_span:                        
   | aexpr                             { ($1, ($startofs, $endofs)) }
@@ -106,5 +86,6 @@ aexpr:
   | aexpr_span PLUS aexpr_span        { Aadd ($1, $3) }
   | aexpr_span PLUSU aexpr_span       { Aaddu ($1, $3) }
   | aexpr_span MINUS aexpr_span       { Asub ($1, $3) }
->>>>>>> 9b126046ea4d1a030f9bd4dcebce842e57b99da8
+  | LP MINUS aexpr_span RP            { Asub (Anum (Z.zero), $3) }
+
 
