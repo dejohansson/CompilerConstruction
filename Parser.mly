@@ -2,11 +2,18 @@
 (* for the full license governing this code.                *)
 
 (* cimp/Parser.mly *)
+%left SC
+                        (* %right ASSIGN *)
+%left NOT               (* BEQ *)
+                        (* %left BLE BGE BL BG *)
+%left AND
+%left PLUS MINUS PLUSU
 
+%token <string> STRINGVAL
 %token <State__State.id> ID
 %token <int> INTVAL
 %token IF THEN ELSE END WHILE DO DONE
-%token TRUE FALSE AND NOT BEQ BLE
+%token TRUE FALSE AND NOT BEQ BLE BGE BL BG
 %token SC LP RP ASSIGN PLUS PLUSU MINUS
 %token EOF
 
@@ -41,6 +48,10 @@ bexpr:
   | NOT bexpr                      { Bnot ($2) }
   | aexpr BEQ aexpr                { Beq ($1, $3) }
   | aexpr BLE aexpr                { Ble ($1, $3) }
+  | aexpr BGE aexpr                { Ble ($3, $1) }
+  | aexpr BL aexpr                 { Band (Ble ($1, $3), Bnot (Beq ($1, $3))) }
+  | aexpr BG aexpr                 { Bnot (Ble ($1, $3)) }
+
 
 aexpr:
   | LP aexpr RP                    { $2 }
@@ -49,4 +60,6 @@ aexpr:
   | aexpr PLUS aexpr               { Aadd ($1, $3) }
   | aexpr PLUSU aexpr              { Aaddu ($1, $3) }
   | aexpr MINUS aexpr              { Asub ($1, $3) }
+  | LP MINUS aexpr RP              { Asub (Anum (Z.zero), $3) }
+
 

@@ -22,10 +22,12 @@ let white   = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
 let id      = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*
 let digits  = ['0'-'9']+
+let stringval = '"' [^'"']* '"'
 
 
 (* lexing rules *)
 rule lex = parse
+
   | "IF"                 { IF }
   | "THEN"               { THEN }
   | "ELSE"               { ELSE }
@@ -40,6 +42,9 @@ rule lex = parse
   | "NOT"                { NOT }
   | "="                  { BEQ }
   | "<="                 { BLE }
+  | ">="                 { BGE }
+  | '<'                  { BL }
+  | '>'                  { BG }
 
   | ';'                  { SC }
   | ":="                 { ASSIGN }
@@ -47,6 +52,7 @@ rule lex = parse
   | "+u"                 { PLUSU }
   | '-'                  { MINUS }
 
+  | stringval as s       { STRINGVAL s }
   | digits as i          { INTVAL (int_of_string i) }           (* literals/values *)
 
   | id as s              { ID (add_id s) }
