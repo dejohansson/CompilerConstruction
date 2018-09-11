@@ -46,8 +46,13 @@ rule lex = parse
   | '<'                  { BL }
   | '>'                  { BG }
 
+  | "SINT"               { SINT }
+  | "UINT32"             { UINT32 }
+
   | ';'                  { SC }
+  | ':'                  { C }
   | ":="                 { ASSIGN }
+  
   | '+'                  { PLUS }
   | "+u"                 { PLUSU }
   | '-'                  { MINUS }
@@ -62,6 +67,7 @@ rule lex = parse
   | "(*"                 { set_info lexbuf; comments 0 lexbuf } (* nested comment *)
   | '('                  { LP }                                 (* must come after comment *)
   | ')'                  { RP }
+  
   | eof                  { EOF }
   | _                    { raise (SyntaxError("Unknown Symbol.")) }
 
