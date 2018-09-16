@@ -2,12 +2,14 @@
 (* for the full license governing this code.                *)
 
 (* cimp/Parser.mly *)
+
+(*
 %left SC
                         (* %right ASSIGN *)
 %left NOT               (* BEQ *)
                         (* %left BLE BGE BL BG *)
 %left AND
-%left PLUS MINUS PLUSU
+%left PLUS MINUS PLUSU*)
 
 %token <string> STRINGVAL
 %token <State__State.id> ID
@@ -61,6 +63,7 @@ com:
     ELSE com_span END                 { Cif ($2, $4, $6) }
   | IF bexpr_span THEN com_span END   { Cif ($2, $4, (Cskip, (0, 0))) }
   | WHILE bexpr_span DO com_span DONE { Cwhile ($2, $4) }
+  | com_span SC EOF                   { Cseq ($1, (Cskip, (0, 0))) } (* Fix semicolon on last line *)
 
 bexpr_span:
   | bexpr                             { ($1, ($startofs, $endofs)) }
@@ -73,8 +76,8 @@ bexpr:
   | aexpr_span BEQ aexpr_span         { Beq ($1, $3) }
   | aexpr_span BLE aexpr_span         { Ble ($1, $3) }
   | aexpr_span BGE aexpr_span         { Ble ($3, $1) }
-  | aexpr_span BL aexpr_span          { Band (Ble ($1, $3), Bnot (Beq ($1, $3))) }
-  | aexpr_span BG aexpr_span          { Bnot (Ble ($1, $3)) }
+  | aexpr_span BL aexpr_span          { Band ((Ble ($1, $3), ($startofs, $endofs)), (Bnot (Beq ($1, $3), ($startofs, $endofs)), ($startofs, $endofs))) }
+  | aexpr_span BG aexpr_span          { Bnot (Ble ($1, $3), ($startofs, $endofs)) }
 
 aexpr_span:                        
   | aexpr                             { ($1, ($startofs, $endofs)) }
@@ -86,6 +89,6 @@ aexpr:
   | aexpr_span PLUS aexpr_span        { Aadd ($1, $3) }
   | aexpr_span PLUSU aexpr_span       { Aaddu ($1, $3) }
   | aexpr_span MINUS aexpr_span       { Asub ($1, $3) }
-  | LP MINUS aexpr_span RP            { Asub (Anum (Z.zero), $3) }
+  | LP MINUS aexpr_span RP            { Asub ((Anum (Z.zero), ($startofs, $endofs)), $3) }
 
 
