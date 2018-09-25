@@ -24,7 +24,7 @@ let rec of_aexpr = function
   | Aaddu (e1, e2)  -> "Aaddu (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
   | Asub (e1, e2)   -> "Asub (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
 and of_aexpr_span (e, (start, stop)) = 
-  "< (" ^ string_of_int start ^ ", " ^ string_of_int stop ^ 
+  "< (Line: " ^ string_of_int start.pos_lnum ^ ", Col: " ^ string_of_int start.pos_cnum ^ 
   ") " ^ of_aexpr e ^ ">"
 
 let rec of_bexpr = function
@@ -43,7 +43,7 @@ let rec of_com = function
   | Cif (b, c1, c2) -> "Cif (" ^ of_bexpr_span b ^ ") (" ^ of_com_span c1 ^ " " ^ of_com_span c2 ^ ")"
   | Cwhile (b, c)   -> "Cwhile (" ^ of_bexpr_span b ^ ") (" ^ of_com_span c ^ ")"
 and of_com_span (c, (start, stop)) = 
-  "< (" ^ string_of_int start ^ ", " ^ string_of_int stop ^ 
+  "< (Line: " ^ string_of_int start.pos_lnum ^ ", Col: " ^ string_of_int start.pos_cnum ^ 
   ") " ^ of_com c ^ ">"
 
 let rec of_decl = function

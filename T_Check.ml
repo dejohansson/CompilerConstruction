@@ -11,10 +11,10 @@ open State__State
 module Imp = Imp__Imp
 
 (* converting a span to a string *)
-let of_span inb (start, stop) = 
-  let _ = seek_in inb start in
-  let s = really_input_string inb (stop - start) in
-  "<" ^ string_of_int start ^ ".." ^ string_of_int stop ^ "> " ^ s
+let of_span inb ((startpos, stop):span) = 
+  let _ = seek_in inb startpos.pos_cnum in
+  let s = really_input_string inb (stop - startpos.pos_cnum) in
+  "<Line: " ^ string_of_int startpos.pos_lnum ^ ", Col: " ^ string_of_int (startpos.pos_cnum-startpos.pos_bol) ^ "> " ^ s
 
 (* report a duplicate definition *)
 let unique_id chan (id1, (t1, s1)) (id2, (t2, s2)) = 
@@ -24,7 +24,7 @@ let unique_id chan (id1, (t1, s1)) (id2, (t2, s2)) =
   else ()
 
 (* build a type environment in acc *)
-let rec idt_acc ch sp acc = function 
+let rec idt_acc ch (sp:span) acc = function 
   | Dseq (d1, d2) -> 
     idt_acc_span ch (idt_acc_span ch acc d1) d2 
   | Ddecl (id, t) -> 
@@ -75,6 +75,7 @@ let rec tc_aexpr ch itl (a, span) : Imp.aexpr * types =
   | Avar id -> 
     let (t, _ ) = get_id_type itl id in
     (Imp.Avar id, t)
+  | Acast (id, t) -> (Imp.Avar id, t)
   | Aadd ((a1, a1_span), (a2, a2_span)) -> 
     (* type check a1 against Tsint *)
     let (ai1, t1) = tc_aexpr ch itl (a1, a1_span) in

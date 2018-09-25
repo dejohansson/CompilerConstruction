@@ -6,7 +6,7 @@ type types =
   | Tuint32
   | Tint (* int litterals can be coersed to both Tsint and Tuint32 *)
 
-type span = int * int
+type span = Lexing.position * int
 
 type aexpr =
   | Anum of (Z.t)
@@ -14,6 +14,7 @@ type aexpr =
   | Aadd of aexpr_span * aexpr_span
   | Aaddu of aexpr_span * aexpr_span
   | Asub of aexpr_span * aexpr_span
+  | Acast of State__State.id * types
 and
   aexpr_span = aexpr * span
 
