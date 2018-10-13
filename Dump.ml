@@ -71,7 +71,8 @@ let rec pretty_of_com t = function
                        tab t ^ "DONE"
 
 let of_instr b = function
-  | Iconst v        -> "Iconst " ^ Z.to_string v
+  (* Original *)
+  | Iconst v   -> "Iconst " ^ Z.to_string v
   | Ivar id    -> "Ivar " ^ (
       match b with
       | false -> of_id id
@@ -91,6 +92,20 @@ let of_instr b = function
   | Ible n          -> "Ible " ^ Z.to_string n
   | Ibgt n          -> "Ibgt " ^ Z.to_string n
   | Ihalt           -> "Ihalt"
+  
+  (* New *)
+  | Iimm (r, n)         -> "Iimm ($" ^ Z.to_string r ^ ", " ^ Z.to_string n ^ ")"
+  | Iload (r, id)       -> "Iload ($" ^ Z.to_string r ^ ", " ^ of_id id ^ ")"
+  | Istore (r, id)      -> "Istore ($" ^ Z.to_string r ^ ", " ^ of_id id ^ ")"
+  | Ipushr r            -> "Ipushr ($" ^ Z.to_string r ^ ")"
+  | Ipopr r             -> "Ipopr ($" ^ Z.to_string r ^ ")"
+  | Iaddr (r1, r2, r3)  -> "Iaddr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
+  | Iaddur (r1, r2, r3) -> "Iaddur ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
+  | Isubr (r1, r2, r3)  -> "Isubr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
+  | Ibeqr (r1, r2, ofs) -> "Ibeqr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
+  | Ibner (r1, r2, ofs) -> "Ibner ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
+  | Ibler (r1, r2, ofs) -> "Ibler ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
+  | Ibgtr (r1, r2, ofs) -> "Ibgtr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
 
 let rec of_code b = function
   | [] -> ""

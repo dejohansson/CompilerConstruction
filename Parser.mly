@@ -90,6 +90,6 @@ aexpr:
   | aexpr_span PLUSU aexpr_span       { Aaddu ($1, $3) }
   | aexpr_span MINUS aexpr_span       { Asub ($1, $3) }
   | LP MINUS aexpr_span RP            { Asub ((Anum (Z.zero), ($startpos, $endofs)), $3) }
-  | LP primtype RP ID                 { Acast ($4, $2) }
+  (*| LP primtype RP ID                 { Acast ($4, $2) }*)
 
 
