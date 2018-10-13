@@ -1,0 +1,18 @@
+a:UINT32;
+b:SINT;
+c:SINT;
+a := 2;
+b := (-5);
+c := 5-6;
+
+(*a := (UINT32)b;*)
+
+
+WHILE b <= c DO 
+    a := 4
+DONE;
+
+(*IF a = b THEN
+    a := a+b-4;
+    b := b+a-4
+END;*)

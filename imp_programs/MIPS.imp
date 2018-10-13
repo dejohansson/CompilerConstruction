@@ -1,0 +1,35 @@
+(*a:SINT;
+a1:SINT;
+a2:SINT;
+a3:SINT;
+a4:SINT;
+a5:SINT;
+a6:SINT;
+a7:SINT;
+a8:SINT;
+a9:SINT;
+a10:SINT;
+
+a := 3;
+(*
+a1 := 9;
+a2 := a + a1;
+*)
+
+(*WHILE a > 0 DO
+    a := a-1
+DONE;*)
+
+IF a = 0 THEN 
+    a := a+1
+ELSE 
+    a := 0 
+END;*)
+
+a : SINT;
+b : SINT;
+a := 1;
+b := 2;
+IF a > 19 THEN b := 1 ELSE b:=3 END;
+b := 2+3;
+b := 1+1
