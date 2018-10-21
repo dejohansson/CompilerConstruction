@@ -13,6 +13,7 @@ module State = State__State
 module Reg = State__Reg
 
 module Imp = Imp__Imp
+module Ast_Opt = Ast_opt__Ast_opt
 
 let () =
   Cmd.cmd; (* parse command line options and put into opt *)
@@ -28,7 +29,8 @@ let () =
          p_stdout ("Decl:" ^ nl ^ T_Dump.of_prog p);  
       *)
 
-      let com = T_Check.tc_prog inBuffer p in
+      let com = if Options.opt.opt_ast then Ast_Opt.copt_ex (T_Check.tc_prog inBuffer p) 
+                else T_Check.tc_prog inBuffer p in
 
       if Options.opt.d_ast then
         p_stderr ("Raw AST:" ^ nl ^ Dump.of_com com ^ nl);
@@ -38,11 +40,11 @@ let () =
       let code = if Options.opt.reg then Compile_Reg.compile_program com else Compile.compile_program com in
       if Options.opt.d_code then
         p_stderr ("Raw Code : \n" ^ Dump.of_code false code ^ nl);
-        p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);
+        (*p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);*)
         MipsGen.to_file Options.opt.outfile code;
       if Options.opt.d_pcode then
         p_stderr ("Pretty Code : \n" ^ Dump.of_code true code ^ nl);
-        p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);
+        (*p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);*)
         MipsGen.to_file Options.opt.outfile code;
 
       let st_0 = State.const (Z.of_int 0) in (* assume all variables 0 *)
