@@ -23,6 +23,7 @@ let rec of_aexpr = function
   | Aadd (e1, e2)   -> "Aadd (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^ ")"
   | Aaddu (e1, e2)  -> "Aaddu (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
   | Asub (e1, e2)   -> "Asub (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
+  | Asubu (e1, e2)   -> "Asubu (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
 and of_aexpr_span (e, (start, stop)) = 
   "< (" ^ string_of_int start.pos_cnum ^ ", " ^ string_of_int stop ^ 
   ") " ^ of_aexpr e ^ ">"

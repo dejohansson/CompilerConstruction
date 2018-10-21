@@ -23,17 +23,17 @@ let of_reg r =
 let of_instr = function
   (* Original *)
   | Iconst v            -> let lb = newLabel 3 in lb ^
-                            "ADDI\t$at, $zero, " ^ Z.to_string v ^ "\n\t" ^
+                            "ADDI\t$t0, $zero, " ^ Z.to_string v ^ "\n\t" ^
                             "ADDI\t$sp, $sp, -4" ^ "\n\t" ^
-                            "SW\t$at, 0($sp)"
+                            "SW\t$t0, 0($sp)"
   | Ivar id             -> let lb = newLabel 3 in lb ^ 
-                            "LW\t$at, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)" ^ "\n\t" ^
+                            "LW\t$t0, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)" ^ "\n\t" ^
                             "ADDI\t$sp, $sp, -4" ^ "\n\t" ^
-                            "SW\t$at, 0($sp)"
+                            "SW\t$t0, 0($sp)"
   | Isetvar id          -> let lb = newLabel 3 in lb ^ 
-                            "LW\t$at, 0($sp)" ^ "\n\t" ^
+                            "LW\t$t0, 0($sp)" ^ "\n\t" ^
                             "ADDI\t$sp, $sp, 4" ^ "\n\t" ^
-                            "SW\t$at, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
+                            "SW\t$t0, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
   | Ibranch n           -> let lb = newLabel 1 in lb ^ 
                             "J\t" ^ pLabel n
   | Iadd                -> let lb = newLabel 5 in lb ^ 
@@ -54,6 +54,12 @@ let of_instr = function
                             "SUB\t$t0, $t1, $t0" ^ "\n\t" ^
                             "ADDI\t$sp, $sp, 4" ^ "\n\t" ^
                             "SW\t$t0, 0($sp)"
+  | Isubu               -> let lb = newLabel 5 in lb ^ 
+                            "LW\t$t0, 0($sp)" ^ "\n\t" ^
+                            "LW\t$t1, 4($sp)" ^ "\n\t" ^
+                            "SUBU\t$t0, $t1, $t0" ^ "\n\t" ^
+                            "ADDI\t$sp, $sp, 4" ^ "\n\t" ^
+                            "SW\t$t0, 0($sp)"
   | Ibeq n              -> let lb = newLabel 4 in lb ^
                             "LW\t$t0, 0($sp)" ^ "\n\t" ^
                             "LW\t$t1, 4($sp)" ^ "\n\t" ^
@@ -69,14 +75,14 @@ let of_instr = function
                             "LW\t$t1, 4($sp)" ^ "\n\t" ^
                             "ADDI\t$sp, $sp, 8" ^ "\n\t" ^
                             "SLT\t$t2, $t1, $t0" ^ "\n\t" ^ 
-                            "BNE\t$t0, $zero, " ^ pLabel n ^ "\n\t" ^ 
+                            "BNE\t$t2, $zero, " ^ pLabel n ^ "\n\t" ^ 
                             "BEQ\t$t1, $t0, " ^ pLabel n
   | Ibgt n              -> let lb = newLabel 5 in lb ^ 
                             "LW\t$t0, 0($sp)" ^ "\n\t" ^
                             "LW\t$t1, 4($sp)" ^ "\n\t" ^
                             "ADDI\t$sp, $sp, 8" ^ "\n\t" ^
                             "SLT\t$t2, $t0, $t1" ^ "\n\t" ^ 
-                            "BNE\t$t0, $zero, " ^ pLabel n
+                            "BNE\t$t2, $zero, " ^ pLabel n
   | Ihalt               -> let lb = newLabel 1 in lb ^ 
                             "J\t" ^ pLabel (Z.of_int (-1))
   
@@ -86,8 +92,8 @@ let of_instr = function
   | Iload (r, id)       -> let lb = newLabel 1 in lb ^ 
                             "LW\t" ^ of_reg r ^ ", " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
   | Istore (r, id)      -> let lb = newLabel 2 in lb ^ 
-                            "ADD\t$at, $zero, " ^ of_reg r ^ "\n\t" ^
-                            "SW\t$at, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
+                            "ADD\t$s0, $zero, " ^ of_reg r ^ "\n\t" ^
+                            "SW\t$s0, " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
   | Ipushr r            -> let lb = newLabel 3 in lb ^
                             "ADDI\t$sp, $sp, -4" ^ "\n\t" ^
                             "SW\t" ^ of_reg r ^ ", 0($sp)"
@@ -100,6 +106,8 @@ let of_instr = function
                             "ADDU\t" ^ of_reg r3 ^ ", " ^ of_reg r1 ^ ", " ^ of_reg r2
   | Isubr (r1, r2, r3)  -> let lb = newLabel 1 in lb ^ 
                             "SUB\t" ^ of_reg r3 ^ ", " ^ of_reg r1 ^ ", " ^ of_reg r2
+  | Isubur (r1, r2, r3) -> let lb = newLabel 1 in lb ^ 
+                            "SUBU\t" ^ of_reg r3 ^ ", " ^ of_reg r1 ^ ", " ^ of_reg r2
   | Ibeqr (r1, r2, ofs) -> let lb = newLabel 1 in lb ^ 
                             "BEQ\t" ^ of_reg r1 ^ ", " ^ of_reg r2 ^ ", " ^ pLabel ofs
   | Ibner (r1, r2, ofs) -> let lb = newLabel 1 in lb ^ 

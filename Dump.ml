@@ -17,6 +17,7 @@ let rec of_aexpr = function
   | Aadd (e1, e2)   -> "Aadd (" ^ of_aexpr e1 ^ ") (" ^ of_aexpr e2 ^")"
   | Aaddu (e1, e2)  -> "Aaddu (" ^ of_aexpr e1 ^ ") (" ^ of_aexpr e2 ^")"
   | Asub (e1, e2)   -> "Asub (" ^ of_aexpr e1 ^ ") (" ^ of_aexpr e2 ^")"
+  | Asubu (e1, e2)  -> "Asubu (" ^ of_aexpr e1 ^ ") (" ^ of_aexpr e2 ^")"
 
 let rec of_bexpr = function
   | Btrue           -> "Btrue"
@@ -42,6 +43,7 @@ let rec pretty_of_aexpr = function
   | Aadd (e1, e2)   -> "(" ^ pretty_of_aexpr e1 ^ " + " ^ pretty_of_aexpr e2 ^")"
   | Aaddu (e1, e2)  -> "(" ^ pretty_of_aexpr e1 ^ " +u " ^ pretty_of_aexpr e2 ^")"
   | Asub (e1, e2)   -> "(" ^ pretty_of_aexpr e1 ^ " - " ^ pretty_of_aexpr e2 ^")"
+  | Asubu (e1, e2)  -> "(" ^ pretty_of_aexpr e1 ^ " -u " ^ pretty_of_aexpr e2 ^")"
 
 let rec pretty_of_bexpr = function
   | Btrue           -> "TRUE"
@@ -87,6 +89,7 @@ let of_instr b = function
   | Iadd            -> "Iadd"
   | Iaddu           -> "Iaddu"
   | Isub            -> "Isub"
+  | Isubu           -> "Isubu"
   | Ibeq n          -> "Ibeq " ^ Z.to_string n
   | Ibne n          -> "Ibne " ^ Z.to_string n
   | Ible n          -> "Ible " ^ Z.to_string n
@@ -102,6 +105,7 @@ let of_instr b = function
   | Iaddr (r1, r2, r3)  -> "Iaddr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
   | Iaddur (r1, r2, r3) -> "Iaddur ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
   | Isubr (r1, r2, r3)  -> "Isubr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
+  | Isubur (r1, r2, r3) -> "Isubur ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", $" ^ Z.to_string r3 ^ ")"
   | Ibeqr (r1, r2, ofs) -> "Ibeqr ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
   | Ibner (r1, r2, ofs) -> "Ibner ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"
   | Ibler (r1, r2, ofs) -> "Ibler ($" ^ Z.to_string r1 ^ ", $" ^ Z.to_string r2 ^ ", " ^ Z.to_string ofs ^ ")"

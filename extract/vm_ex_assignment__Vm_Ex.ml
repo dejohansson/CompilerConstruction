@@ -54,6 +54,11 @@ let instr_ex (c: Vm__Vm.instr list) (ms: Vm__Vm.machine_state) : Vm__Vm.machine_
           Vm__Vm.VMS ((Z.add p Z.one),
             (State__Reg.write r x3
                (Z.sub (State__Reg.read r x1) (State__Reg.read r x2))), s, m)
+        | Vm__Vm.Isubur (x1, x2, x3) ->
+          Vm__Vm.VMS ((Z.add p Z.one),
+            (State__Reg.write r x3
+               (Bv_op__BV_OP.bv_sub (State__Reg.read r x1)
+                  (State__Reg.read r x2))), s, m)
         | Vm__Vm.Ibeqr (x1, x2, ofs) ->
           begin match Z.equal (State__Reg.read r x1) (State__Reg.read r x2) with
           | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, s, m)
@@ -96,29 +101,33 @@ let instr_ex (c: Vm__Vm.instr list) (ms: Vm__Vm.machine_state) : Vm__Vm.machine_
           let (v12, stack13) = pop s in let (v22, stack22) = pop stack13 in
           let dif = Z.sub v22 v12 in
           Vm__Vm.VMS ((Z.add p Z.one), r, (Vm__Vm.push dif stack22), m)
-        | Vm__Vm.Ibeq ofs ->
+        | Vm__Vm.Isubu ->
           let (v13, stack14) = pop s in let (v23, stack23) = pop stack14 in
-          begin match Z.equal v23 v13 with
-          | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, stack23, m)
-          | false -> Vm__Vm.VMS ((Z.add p Z.one), r, stack23, m)
-          end
-        | Vm__Vm.Ible ofs ->
+          let sum = Bv_op__BV_OP.bv_sub v23 v13 in
+          Vm__Vm.VMS ((Z.add p Z.one), r, (Vm__Vm.push sum stack23), m)
+        | Vm__Vm.Ibeq ofs ->
           let (v14, stack15) = pop s in let (v24, stack24) = pop stack15 in
-          begin match Z.leq v24 v14 with
+          begin match Z.equal v24 v14 with
           | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, stack24, m)
           | false -> Vm__Vm.VMS ((Z.add p Z.one), r, stack24, m)
           end
-        | Vm__Vm.Ibne ofs ->
+        | Vm__Vm.Ible ofs ->
           let (v15, stack16) = pop s in let (v25, stack25) = pop stack16 in
-          begin match not (Z.equal v25 v15) with
+          begin match Z.leq v25 v15 with
           | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, stack25, m)
           | false -> Vm__Vm.VMS ((Z.add p Z.one), r, stack25, m)
           end
-        | Vm__Vm.Ibgt ofs ->
+        | Vm__Vm.Ibne ofs ->
           let (v16, stack17) = pop s in let (v26, stack26) = pop stack17 in
-          begin match Z.gt v26 v16 with
+          begin match not (Z.equal v26 v16) with
           | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, stack26, m)
           | false -> Vm__Vm.VMS ((Z.add p Z.one), r, stack26, m)
+          end
+        | Vm__Vm.Ibgt ofs ->
+          let (v17, stack18) = pop s in let (v27, stack27) = pop stack18 in
+          begin match Z.gt v27 v17 with
+          | true -> Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, stack27, m)
+          | false -> Vm__Vm.VMS ((Z.add p Z.one), r, stack27, m)
           end
         | Vm__Vm.Ibranch ofs ->
           Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, s, m)

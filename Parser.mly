@@ -20,13 +20,13 @@
 
 %token SC C LP RP 
 %token ASSIGN
-%token PLUS PLUSU MINUS
+%token PLUS PLUSU MINUS MINUSU
 %token EOF
 
 (* precedence and associativity according to C/Java/Rust? *)
 %left SC
 %left AND
-%left MINUS, PLUS, PLUSU
+%left MINUS, PLUS, PLUSU, MINUSU
 %left NOT
 
 %{
@@ -89,6 +89,7 @@ aexpr:
   | aexpr_span PLUS aexpr_span        { Aadd ($1, $3) }
   | aexpr_span PLUSU aexpr_span       { Aaddu ($1, $3) }
   | aexpr_span MINUS aexpr_span       { Asub ($1, $3) }
+  | aexpr_span MINUSU aexpr_span      { Asubu ($1, $3) }
   | LP MINUS aexpr_span RP            { Asub ((Anum (Z.zero), ($startpos, $endofs)), $3) }
   (*| LP primtype RP ID                 { Acast ($4, $2) }*)
 
