@@ -132,7 +132,7 @@ let instr_ex (c: Vm__Vm.instr list) (ms: Vm__Vm.machine_state) : Vm__Vm.machine_
         | Vm__Vm.Ibranch ofs ->
           Vm__Vm.VMS ((Z.add (Z.add p Z.one) ofs), r, s, m)
         | Vm__Vm.Ihalt -> raise (Halt ms)
-        (*| _ -> raise Err*)
+        | _ -> raise Err
         end
       | _ -> assert false (* absurd *)
       end with

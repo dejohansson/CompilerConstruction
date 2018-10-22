@@ -2,14 +2,16 @@ a:UINT32;
 b:SINT;
 c:SINT;
 a := 2;
-b := (-5);
-c := 5-6;
+b := 0;
+c := 5;
 
-(*a := (UINT32)b;*)
+a := b+c as UINT32;
+a := (a as SINT + 4) as UINT32;
 
 
 WHILE b <= c DO 
-    a := 4
+    a := a -u 1;
+    b := (b as UINT32 +u 1) as SINT
 DONE;
 
 (*IF a = b THEN

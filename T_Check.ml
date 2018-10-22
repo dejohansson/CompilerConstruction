@@ -75,7 +75,8 @@ let rec tc_aexpr ch itl (a, span) : Imp.aexpr * types =
   | Avar id -> 
     let (t, _ ) = get_id_type itl id in
     (Imp.Avar id, t)
-  (*| Acast (id, t) -> (Imp.Avar id, t)*)
+  | Acast (a, t) -> 
+    let (expr, _) = (tc_aexpr ch itl a) in (expr, t)
   | Aadd ((a1, a1_span), (a2, a2_span)) -> 
     (* type check a1 against Tsint *)
     let (ai1, t1) = tc_aexpr ch itl (a1, a1_span) in

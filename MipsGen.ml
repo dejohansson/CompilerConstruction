@@ -88,7 +88,7 @@ let of_instr = function
   
   (* New *)
   | Iimm (r, n)         -> let lb = newLabel 1 in lb ^ 
-                            "ADDI\t" ^ of_reg r ^ ", $zero" ^ ", " ^ Z.to_string n
+                            "LI\t" ^ of_reg r ^ ", " ^ Z.to_string n
   | Iload (r, id)       -> let lb = newLabel 1 in lb ^ 
                             "LW\t" ^ of_reg r ^ ", " ^ string_of_int ((id_to_int id)*4) ^ "($gp)"
   | Istore (r, id)      -> let lb = newLabel 2 in lb ^ 

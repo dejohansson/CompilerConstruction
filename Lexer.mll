@@ -48,6 +48,7 @@ rule lex = parse
 
   | "SINT"               { SINT }
   | "UINT32"             { UINT32 }
+  | "as"                 { AS }
 
   | ';'                  { SC }
   | ':'                  { C }

@@ -11,4 +11,5 @@ d := 5;
 IF d <= 10 && TRUE THEN e := 10 END;
 IF d <= 10 && FALSE THEN e := 11 END;
 c := 2 -u 2;
-c := a -u a 
+c := a -u a;
+e := (SINT)(((UINT32)(d + 1)) -u ((UINT32)(d + 1)))

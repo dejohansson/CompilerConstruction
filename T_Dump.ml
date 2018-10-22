@@ -24,6 +24,7 @@ let rec of_aexpr = function
   | Aaddu (e1, e2)  -> "Aaddu (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
   | Asub (e1, e2)   -> "Asub (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
   | Asubu (e1, e2)   -> "Asubu (" ^ of_aexpr_span e1 ^ ") (" ^ of_aexpr_span e2 ^")"
+  | Acast (e, t)   -> "Asubu (" ^ of_aexpr_span e ^ ") (" ^ of_types t ^")"
 and of_aexpr_span (e, (start, stop)) = 
   "< (" ^ string_of_int start.pos_cnum ^ ", " ^ string_of_int stop ^ 
   ") " ^ of_aexpr e ^ ">"
