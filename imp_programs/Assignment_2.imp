@@ -5,7 +5,7 @@ a := 2;
 b := 0;
 c := 5;
 
-a := b+c as UINT32;
+a := b + c as UINT32;
 a := (a as SINT + 4) as UINT32;
 
 
