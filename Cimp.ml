@@ -40,13 +40,9 @@ let () =
       let code = if Options.opt.reg then Compile_Reg.compile_program com else Compile.compile_program com in
       if Options.opt.d_code then
         p_stderr ("Raw Code : \n" ^ Dump.of_code false code ^ nl);
-        (*p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);*)
-        MipsGen.to_file Options.opt.outfile code;
       if Options.opt.d_pcode then
         p_stderr ("Pretty Code : \n" ^ Dump.of_code true code ^ nl);
-        (*p_stderr ("MIPS : \n" ^ MipsGen.of_code code ^ nl);*)
-        MipsGen.to_file Options.opt.outfile code;
-
+      MipsGen.to_file Options.opt.outfile code;
       let st_0 = State.const (Z.of_int 0) in (* assume all variables 0 *)
 
       (* imp_ex execution *)

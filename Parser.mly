@@ -23,9 +23,10 @@
 %token PLUS PLUSU MINUS MINUSU
 %token EOF
 
-%left SC AS
+%left SC
 %left AND
 %left MINUS, PLUS, PLUSU, MINUSU
+%left AS
 %left NOT
 
 %{

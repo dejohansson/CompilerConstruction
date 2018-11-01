@@ -1,0 +1,19 @@
+a1:SINT;
+a2:SINT;
+a3:SINT;
+a4:SINT;
+a5:SINT;
+a6:SINT;
+a7:SINT;
+a8:SINT;
+a9:SINT;
+
+IF 3 >= 4 THEN a1 := (-1) END;
+IF 4 >= 4 THEN a2 := (-1) END;
+IF 5 >= 4 THEN a3 := (-1) END;
+IF 3 < 4 THEN a4 := (-1) END;
+IF 4 < 4 THEN a5 := (-1) END;
+IF 5 < 4 THEN a6 := (-1) END;
+IF 3 > 4 THEN a7 := (-1) END;
+IF 4 > 4 THEN a8 := (-1) END;
+IF 5 > 4 THEN a9 := (-1) END

@@ -1,22 +1,16 @@
 x:SINT;
-a1:SINT;
-a2:SINT;
-a3:SINT;
-a4:SINT;
-a5:SINT;
-a6:SINT;
-a7:SINT;
-a8:SINT;
-a9:SINT;
-a10:SINT;
-a11:SINT;
-a12:SINT;
-a13:SINT;
-a14:SINT;
 
+(* 1a *)
 
-x := 1-2+3;
+(* "This is a string in a comment" *)
+// "This is a string"
 
+(* 1b *)
+IF NOT 2 = 3 + 4 && TRUE && TRUE THEN
+    x := 1-2+3
+END
+
+(*
 IF 4 = 4 THEN a1 := 1 END;
 IF 4 = 3 THEN a2 := 1 END;
 IF 3 <= 4 THEN a3 := 1 END;
@@ -30,7 +24,4 @@ IF 4 < 4 THEN a10 := 1 END;
 IF 5 < 4 THEN a11 := 1 END;
 IF 3 > 4 THEN a12 := 1 END;
 IF 4 > 4 THEN a13 := 1 END;
-IF 5 > 4 THEN a14 := 1 END
-
-(* "This is a string in a comment" *)
-// "This is a string"
+IF 5 > 4 THEN a14 := 1 END*)
