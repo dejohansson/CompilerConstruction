@@ -1,3 +1,13 @@
-IF TRUE THEN a := 1 ELSE b := 2 END
 
-
+a:SINT;
+b:SINT;
+a := 2+3;
+IF a <= 7 THEN
+    b := 20
+ELSE
+    b := b - (-10)
+END;
+WHILE 7 <= b DO
+    a := a + 1;
+    b := b - 1
+DONE
